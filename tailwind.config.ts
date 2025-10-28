@@ -62,6 +62,9 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Cores personalizadas da imagem
+        'app-background': '#3A6652', // Verde escuro
+        'app-accent': '#C8A870',     // Dourado/Bronze
       },
       borderRadius: {
         lg: "var(--radius)",
