@@ -7,10 +7,10 @@ import { Switch } from "@/components/ui/switch";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 
 const RoiCalculator = () => {
-  const [adSpend, setAdSpend] = useState<number>(0);
-  const [productPrice, setProductPrice] = useState<number>(0);
-  const [numberOfSales, setNumberOfSales] = useState<number>(0);
-  const [cogs, setCogs] = useState<number>(0); // Cost of Goods Sold
+  const [adSpend, setAdSpend] = useState<number | null>(null);
+  const [productPrice, setProductPrice] = useState<number | null>(null);
+  const [numberOfSales, setNumberOfSales] = useState<number | null>(null);
+  const [cogs, setCogs] = useState<number | null>(null); // Cost of Goods Sold
   const [isRoasMode, setIsRoasMode] = useState<boolean>(false);
 
   const formatCurrency = (value: number) => {
@@ -21,13 +21,18 @@ const RoiCalculator = () => {
   };
 
   const { totalRevenue, grossProfit, roi, cpa, roas } = useMemo(() => {
-    const revenue = productPrice * numberOfSales;
-    const profit = revenue - adSpend;
-    const profitRoas = revenue - adSpend - (cogs * numberOfSales);
+    const currentAdSpend = adSpend || 0;
+    const currentProductPrice = productPrice || 0;
+    const currentNumberOfSales = numberOfSales || 0;
+    const currentCogs = cogs || 0;
 
-    const calculatedRoi = adSpend > 0 ? (profit / adSpend) : 0;
-    const calculatedCpa = numberOfSales > 0 ? adSpend / numberOfSales : 0;
-    const calculatedRoas = (adSpend + (cogs * numberOfSales)) > 0 ? revenue / (adSpend + (cogs * numberOfSales)) : 0;
+    const revenue = currentProductPrice * currentNumberOfSales;
+    const profit = revenue - currentAdSpend;
+    const profitRoas = revenue - currentAdSpend - (currentCogs * currentNumberOfSales);
+
+    const calculatedRoi = currentAdSpend > 0 ? (profit / currentAdSpend) : 0;
+    const calculatedCpa = currentNumberOfSales > 0 ? currentAdSpend / currentNumberOfSales : 0;
+    const calculatedRoas = (currentAdSpend + (currentCogs * currentNumberOfSales)) > 0 ? revenue / (currentAdSpend + (currentCogs * currentNumberOfSales)) : 0;
 
     return {
       totalRevenue: revenue,
@@ -71,8 +76,8 @@ const RoiCalculator = () => {
               <Input
                 id="ad-spend"
                 type="number"
-                value={adSpend}
-                onChange={(e) => setAdSpend(parseFloat(e.target.value) || 0)}
+                value={adSpend === null ? "" : adSpend}
+                onChange={(e) => setAdSpend(e.target.value === "" ? null : parseFloat(e.target.value))}
                 placeholder="Ex: 500.00"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-app-accent focus:ring-app-accent"
               />
@@ -84,8 +89,8 @@ const RoiCalculator = () => {
               <Input
                 id="product-price"
                 type="number"
-                value={productPrice}
-                onChange={(e) => setProductPrice(parseFloat(e.target.value) || 0)}
+                value={productPrice === null ? "" : productPrice}
+                onChange={(e) => setProductPrice(e.target.value === "" ? null : parseFloat(e.target.value))}
                 placeholder="Ex: 2000.00"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-app-accent focus:ring-app-accent"
               />
@@ -97,8 +102,8 @@ const RoiCalculator = () => {
               <Input
                 id="number-of-sales"
                 type="number"
-                value={numberOfSales}
-                onChange={(e) => setNumberOfSales(parseInt(e.target.value) || 0)}
+                value={numberOfSales === null ? "" : numberOfSales}
+                onChange={(e) => setNumberOfSales(e.target.value === "" ? null : parseInt(e.target.value))}
                 placeholder="Ex: 3"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-app-accent focus:ring-app-accent"
               />
@@ -111,8 +116,8 @@ const RoiCalculator = () => {
                 <Input
                   id="cogs"
                   type="number"
-                  value={cogs}
-                  onChange={(e) => setCogs(parseFloat(e.target.value) || 0)}
+                  value={cogs === null ? "" : cogs}
+                  onChange={(e) => setCogs(e.target.value === "" ? null : parseFloat(e.target.value))}
                   placeholder="Ex: 100.00"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-app-accent focus:ring-app-accent"
                 />
